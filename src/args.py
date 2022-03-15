@@ -18,7 +18,7 @@ def process_arguments(params=None):
     parser.add_argument("--notQR", type=bool, default=False, help="Use QR Reduction to reduce dimentionality")
     parser.add_argument("--order-preprocessing", type=str, default='PM', help="Order in which to apply the preprocessing, MP: Mean crops then preprocess or PM: Preprocess features then Mean crops")
     parser.add_argument("--lamda-reg", type=float, default=0.05, help="Regularization for simplex estimation")
-    parser.add_argument("--simplex", type=bool, default=False, help="Use simplex extraction")
+    parser.add_argument("--extraction", type=str, default='simplex', help="Extraction type")
     parser.add_argument("--alpha-iter", type=int, default=-1, help="Number of iteration for alphas in Gradient descent per epoch")
     parser.add_argument("--thresh-elbow", type=float, default=-1, help="Threshold for MSE jumps in simplex extraction in order to automatically selecet the best number of  summits ")
     parser.add_argument("--lamda-mix", type=float, default=1, help="coefficient to mix simplex summets with mean")
@@ -54,7 +54,7 @@ def process_arguments(params=None):
     if params!=None:
         for key, value in params.items():
             args.__dict__[key]= value
-        
+    assert args.extraction in ['kmeans', 'simplex'], 'wrong choice of extraction, choose either "kmeans" or "simplex"'
     ### process arguments
     if args.dataset_device == "":
         args.dataset_device = args.device
