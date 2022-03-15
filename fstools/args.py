@@ -10,7 +10,7 @@ def process_arguments(params=None):
     parser = argparse.ArgumentParser()
     ### hyperparameters
     parser.add_argument("--batch-size", type=int, default=50, help="batch size")
-    parser.add_argument("--preprocessing", type=str, default="ME", help="preprocessing sequence for few shot, can contain R:relu P:sqrt E:sphering and M:centering")
+    parser.add_argument("--preprocessing", type=str, default="", help="preprocessing sequence for few shot, can contain R:relu P:sqrt E:sphering and M:centering")
     parser.add_argument("--postprocessing", type=str, default="", help="postprocessing sequence for few shot, can contain R:relu P:sqrt E:sphering and M:centering")
     parser.add_argument("--postprocess-after-simplex", action="store_true", help="postprocessing sequence for few shot, boolean if True run postprocessing after simplex extraction")
 
