@@ -9,9 +9,9 @@ import numpy as np
 import random
 import warnings
 import pickle
-from src.args import process_arguments
-from src.utils import fix_seed, load_features
-from src.solver import gradient_descent_ClosedForm, find_summetsBatch, find_summetsKmeans
+from fstools.args import process_arguments
+from fstools.utils import fix_seed, load_features
+from fstools.solver import gradient_descent_ClosedForm, find_summetsBatch, find_summetsKmeans
 warnings.filterwarnings("ignore")
 
 args = process_arguments()

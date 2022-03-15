@@ -9,9 +9,9 @@ import numpy as np
 import random
 import warnings
 import pickle
-from src.args import process_arguments
-from src.utils import fix_seed, load_features, stats
-from src.few_shot_utils import define_runs, generate_runs
+from fstools.args import process_arguments
+from fstools.utils import fix_seed, load_features, stats
+from fstools.few_shot_utils import define_runs, generate_runs
 
 warnings.filterwarnings("ignore")
 args = process_arguments()
