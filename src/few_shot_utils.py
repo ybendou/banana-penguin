@@ -1,5 +1,6 @@
 import torch
-
+import numpy as np
+import random
 def generate_runs(data, run_classes, run_indices, batch_idx, batch_few_shot_runs=100):
     n_runs, n_ways, n_samples = run_classes.shape[0], run_classes.shape[1], run_indices.shape[2]
     run_classes = run_classes[batch_idx * batch_few_shot_runs : (batch_idx + 1) * batch_few_shot_runs]

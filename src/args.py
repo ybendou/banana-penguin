@@ -21,15 +21,14 @@ def process_arguments(params=None):
     parser.add_argument("--simplex", type=bool, default=False, help="Use simplex extraction")
     parser.add_argument("--alpha-iter", type=int, default=-1, help="Number of iteration for alphas in Gradient descent per epoch")
     parser.add_argument("--thresh-elbow", type=float, default=-1, help="Threshold for MSE jumps in simplex extraction in order to automatically selecet the best number of  summits ")
+    parser.add_argument("--lamda-mix", type=float, default=1, help="coefficient to mix simplex summets with mean")
 
     ### pytorch options
     parser.add_argument("--device", type=str, default="cuda:0", help="device(s) to use, for multiple GPUs try cuda:ijk, will not work with 10+ GPUs")
     parser.add_argument("--dataset-path", type=str, default='test/test/', help="dataset path")
     parser.add_argument("--features-path", type=str, default='/ssd2/data/AugmentedSamples/features/', help="features directory path")
     parser.add_argument("--features-base-path", type=str, default='/ssd2/data/AugmentedSamples/features/', help="base features directory path")
-
-    parser.add_argument("--file-save", type=str, default='', help="path file to save the results of the simplex extraction")
-
+    parser.add_argument("--simplex-file", type=str, default='', help="path file to save or load the results of the simplex extraction")
     parser.add_argument("--log-perf", type=str, default='', help="file where to report performance")
     
     parser.add_argument("--dataset-device", type=str, default="", help="use a different device for storing the datasets (use 'cpu' if you are lacking VRAM)")
