@@ -159,7 +159,7 @@ def gradient_descent_ClosedForm(X, K, lamda=0.1, trainCfg={'lr':0.1, 'mmt':0.8, 
     return best_epoch['D'], best_epoch["loss"]   # load images as tensors
     
 
-def find_summetsBatch(data, args, thresh_elbow=1.5, return_jumpsMSE=False, lamda_reg=0.05, n_iter=100, alpha_iter=5, trainCfg={'lr':0.1, 'mmt':0.8, 'D_iter':1, 'loss_amp':100, 'loss_alpha':1}, verbose=False, maxK=3, concat=True):
+def find_summetsBatch(data, args, method='simplex',thresh_elbow=1.5, return_jumpsMSE=False, lamda_reg=0.05, n_iter=100, alpha_iter=5, trainCfg={'lr':0.1, 'mmt':0.8, 'D_iter':1, 'loss_amp':100, 'loss_alpha':1}, verbose=False, maxK=3, concat=True):
     """
     Find summets of all images in a batch of data, returns the best number of summets per image based on the elbow method.
     Arguments:
@@ -181,7 +181,11 @@ def find_summetsBatch(data, args, thresh_elbow=1.5, return_jumpsMSE=False, lamda
     K_list = {}
     MSE_list = []
     for K in range(1,maxK+1):
-        D_sol, lossMSE = gradient_descent_ClosedForm(data, K, lamda=lamda_reg, trainCfg=trainCfg, D_init='oui', verbose=verbose, device=args.device)
+        if method=='simplex':
+            D_sol, lossMSE = gradient_descent_ClosedForm(data, K, lamda=lamda_reg, trainCfg=trainCfg, D_init='oui', verbose=verbose, device=args.device)
+        elif method=='kmeans':
+            D_sol, lossMSE = kmeans(data, K)
+
         K_list[K] = D_sol
         MSE_list.append(lossMSE)
 
@@ -246,3 +250,17 @@ def get_closest_predictions(D, K_solutions_t, n_shots, args):
     predictions = torch.stack(predictions).reshape(args.n_ways, -1)
     return predictions
 
+def kmeans(data, K=2):
+    """
+        Given a batch of data points, return centroids used kmeans algorithm
+    """
+    from sklearn.cluster import KMeans
+    batchsize = data.shape[0]
+    losses = []
+    centroids = []
+    for b in range(batchsize):
+        kmeanModel = KMeans(n_clusters=k)
+        kmeanModel.fit(data[b].cpu())
+        losses.append(kmeanModel.intertia_)
+        centroids.append(torch.from_numpy(kmeanModel.cluster_centers_))
+    return torch.stack(centroids), losses

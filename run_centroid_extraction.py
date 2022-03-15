@@ -11,7 +11,7 @@ import warnings
 import pickle
 from src.args import process_arguments
 from src.utils import fix_seed, load_features
-from src.solver import gradient_descent_ClosedForm, find_summetsBatch
+from src.solver import gradient_descent_ClosedForm, find_summetsBatch, find_summetsKmeans
 warnings.filterwarnings("ignore")
 
 args = process_arguments()
@@ -32,7 +32,7 @@ for b in tqdm(range(0, novel_features.shape[0]//args.batch_size)):
         D = find_summetsBatch(data, args, thresh_elbow=1.5, return_jumpsMSE=True, lamda_reg=args.lamda_reg, n_iter=150, alpha_iter=5, 
                                                         trainCfg={'lr':0.1, 'mmt':0.8, 'D_iter':1, 'loss_amp':10000,'loss_alpha':1}, verbose=False, maxK=4, concat=False)
     elif args.extraction=='kmeans':
-        pass
+        D = find_summetsKmeans(data, args, maxK=4)
     else:
         raise f'extraction options are either "simplex" or "kmeans"'
     list_D = list_D + D
