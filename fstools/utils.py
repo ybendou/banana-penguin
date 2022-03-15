@@ -113,7 +113,9 @@ def load_features(features_path, base_features_path=''):
         AS_feats = novel_features.mean(dim=2)
 
         if base_features_path!='':
-            base_features = torch.load(base_features_path, map_location='cpu')[:64]
+            feats = torch.load(base_features_path, map_location='cpu')
+            base_features = feats[:64]
+            AS_feats = feats[80:]
             return novel_features, AS_feats, base_features
         return novel_features, AS_feats  
     else:

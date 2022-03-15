@@ -30,7 +30,7 @@ for b in tqdm(range(0, novel_features.shape[0]//args.batch_size)):
                                                     trainCfg={'lr':0.1, 'mmt':0.8, 'D_iter':1, 'loss_amp':10000,'loss_alpha':1}, verbose=False, maxK=4, concat=False)
     list_D = list_D + D
 
-if args.file_save:
+if args.centroids_file:
     with open(args.centroids_file, 'wb') as handle:
         pickle.dump(list_D, handle, protocol=pickle.HIGHEST_PROTOCOL)
 

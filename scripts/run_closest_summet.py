@@ -18,12 +18,14 @@ args = process_arguments()
 fix_seed(args.seed, deterministic=args.deterministic)
 
 novel_features, AS_feats, base_features = load_features(args.features_path, args.features_base_path)
+print('Features Loaded')
 mean_base_features = torch.mean(base_features.reshape(-1, base_features.shape[-1]), dim=0).to('cpu')
 
 # For each image, get closest crop to each simplex summet
 
 with open(args.centroids_file, 'rb') as pickle_file:
     features = pickle.load(pickle_file)
+print('Summets loaded')
 
 num_elements = [600]*20
 runs = list(zip(*[define_runs(args.n_ways, s, args.n_queries, 20, num_elements, args.n_runs) for s in args.n_shots]))
