@@ -20,7 +20,7 @@ def process_arguments(params=None):
     parser.add_argument("--lamda-reg", type=float, default=0.05, help="Regularization for simplex estimation")
     parser.add_argument("--extraction", type=str, default='simplex', help="Extraction type")
     parser.add_argument("--alpha-iter", type=int, default=-1, help="Number of iteration for alphas in Gradient descent per epoch")
-    parser.add_argument("--thresh-elbow", type=float, default=-1, help="Threshold for MSE jumps in simplex extraction in order to automatically selecet the best number of  summits ")
+    parser.add_argument("--thresh-elbow", type=float, default=1.5, help="Threshold for MSE jumps in simplex extraction in order to automatically selecet the best number of  summits ")
     parser.add_argument("--lamda-mix", type=float, default=1, help="coefficient to mix simplex summets with mean")
 
     ### pytorch options
