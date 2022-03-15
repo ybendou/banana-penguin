@@ -259,8 +259,8 @@ def kmeans(data, K=2):
     losses = []
     centroids = []
     for b in range(batchsize):
-        kmeanModel = KMeans(n_clusters=k)
+        kmeanModel = KMeans(n_clusters=K)
         kmeanModel.fit(data[b].cpu())
-        losses.append(kmeanModel.intertia_)
+        losses.append(kmeanModel.inertia_)
         centroids.append(torch.from_numpy(kmeanModel.cluster_centers_))
-    return torch.stack(centroids), losses
+    return torch.stack(centroids), torch.Tensor(losses)

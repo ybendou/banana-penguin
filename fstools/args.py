@@ -28,7 +28,7 @@ def process_arguments(params=None):
     parser.add_argument("--dataset-path", type=str, default='test/test/', help="dataset path")
     parser.add_argument("--features-path", type=str, default='/ssd2/data/AugmentedSamples/features/', help="features directory path")
     parser.add_argument("--features-base-path", type=str, default='/ssd2/data/AugmentedSamples/features/', help="base features directory path")
-    parser.add_argument("--simplex-file", type=str, default='', help="path file to save or load the results of the simplex extraction")
+    parser.add_argument("--centroids-file", type=str, default='', help="path file to save or load the results of the centroids extraction")
     parser.add_argument("--log-perf", type=str, default='', help="file where to report performance")
     
     parser.add_argument("--dataset-device", type=str, default="", help="use a different device for storing the datasets (use 'cpu' if you are lacking VRAM)")

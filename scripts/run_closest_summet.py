@@ -22,7 +22,7 @@ mean_base_features = torch.mean(base_features.reshape(-1, base_features.shape[-1
 
 # For each image, get closest crop to each simplex summet
 
-with open(args.simplex_file, 'rb') as pickle_file:
+with open(args.centroids_file, 'rb') as pickle_file:
     features = pickle.load(pickle_file)
 
 num_elements = [600]*20
