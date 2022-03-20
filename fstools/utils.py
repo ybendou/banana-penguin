@@ -92,8 +92,10 @@ def dimReduction(means):
     Q, R = torch.linalg.qr(LDAdirections.T)
     return Q.T
 
-def load_features(features_path, base_features_path=''):
-    
+def load_features(features_path, base_features_path='', device='cpu', return_mean_base=False):
+    """
+    Load features and concatenate them given a list of features.
+    """
 
     if features_path!=base_features_path:
         novel_features_list = []
@@ -104,22 +106,28 @@ def load_features(features_path, base_features_path=''):
             if type(feats)==dict:
                 feats = feats['augmented']
             else:
-                if feats.shape[0]==100: feats = feats[80:]
+                if feats.shape[0]==100: feats = feats[80:] # if features include base, val and novel
             novel_features_list.append(feats.reshape(20, 600, -1, 640))
             
         novel_features = torch.cat(novel_features_list, dim=2)
         del feats, novel_features_list
         
-        AS_feats = novel_features.mean(dim=2)
+        AS_feats = novel_features.mean(dim=2).to(device) # get average of features
 
+        # Get features of the base dataset 
         if base_features_path!='':
-            feats = torch.load(base_features_path, map_location='cpu')
-            base_features = feats[:64]
-            AS_feats = feats[80:]
-            return novel_features, AS_feats, base_features
+            print('V4')
+            feats = torch.load(base_features_path, map_location=device)
+            if 'mean' in base_features_path: # if loading directly the mean vector of the base classes
+                return novel_features, AS_feats, feats
+            else:
+                base_features = feats[:64]
+                if return_mean_base:
+                    base_features = torch.mean(base_features.reshape(-1, base_features.shape[-1]), dim=0).to('cpu')
+                return novel_features, AS_feats, base_features
         return novel_features, AS_feats  
     else:
-        feats = torch.load(base_features_path, map_location='cpu')
+        feats = torch.load(base_features_path, map_location=device)
         base_features = feats[:64]
         AS_feats = feats[80:]
         novel_features = AS_feats.unsqueeze(2)

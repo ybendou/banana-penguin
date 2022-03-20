@@ -14,30 +14,7 @@ from fstools.utils import fix_seed, load_features, stats
 from fstools.few_shot_utils import define_runs, generate_runs
 warnings.filterwarnings("ignore")
 
-args = process_arguments()
-fix_seed(args.seed, deterministic=args.deterministic)
-
-novel_features, AS_feats, base_features = load_features(args.features_path, args.features_base_path)
-print('Features Loaded')
-mean_base_features = torch.mean(base_features.reshape(-1, base_features.shape[-1]), dim=0).to('cpu')
-
-# For each image, get closest crop to each simplex summet
-
-with open(args.centroids_file, 'rb') as pickle_file:
-    features = pickle.load(pickle_file)
-print('Summets loaded')
-
-num_elements = [600]*20
-runs = list(zip(*[define_runs(args.n_ways, s, args.n_queries, 20, num_elements, args.n_runs) for s in args.n_shots]))
-run_classes, run_indices = runs[0], runs[1]
-
-if args.preprocessing == 'ME':
-    features = [x - mean_base_features.unsqueeze(0) for x in features]
-    features = [x / torch.norm(x, dim = 1, keepdim = True) for x in features]
-    AS_feats = AS_feats - mean_base_features.unsqueeze(0)
-    AS_feats = AS_feats / torch.norm(AS_feats, dim = 2, keepdim = True)
-
-def ncmNewStrat(features, run_classes, run_indices, n_shots, n_runs=args.n_runs, AS_feats=None, lam_mix=1):
+def ncmInterpol(features, run_classes, run_indices, n_shots, n_runs, args, AS_feats=None, lam_mix=1):
     """
     Compute NCM based on simplex summets
     Perform a linear combination between mean of summets and each  summets
@@ -86,5 +63,35 @@ def ncmNewStrat(features, run_classes, run_indices, n_shots, n_runs=args.n_runs,
             scores += list((winners == targets).float().mean(dim = 1).mean(dim = 1).to("cpu").numpy())
         return stats(scores, ""), torch.Tensor(scores)
 
-(acc, conf), scoresMixTest = ncmNewStrat(features, run_classes[0], run_indices[0], args.n_shots[0], n_runs=args.n_runs, AS_feats=AS_feats, lam_mix=args.lamda_mix)
-print(f'{args.lamda_mix}: {np.round(100*acc,2)}% ±{np.round(conf*100, 2)}%')
+
+if __name__=='__main__':
+
+    args = process_arguments()
+    fix_seed(args.seed, deterministic=args.deterministic)
+
+    novel_features, AS_feats, base_features = load_features(args.features_path, args.features_base_path)
+    print('Features Loaded')
+    mean_base_features = torch.mean(base_features.reshape(-1, base_features.shape[-1]), dim=0).to('cpu')
+
+    # For each image, get closest crop to each simplex summet
+
+    with open(args.centroids_file, 'rb') as pickle_file:
+        features = pickle.load(pickle_file)
+    print('Summets loaded')
+
+    num_elements = [600]*20
+    runs = list(zip(*[define_runs(args.n_ways, s, args.n_queries, 20, num_elements, args.n_runs) for s in args.n_shots]))
+    run_classes, run_indices = runs[0], runs[1]
+
+    if args.preprocessing == 'ME':
+        features = [x - mean_base_features.unsqueeze(0) for x in features]
+        features = [x / torch.norm(x, dim = 1, keepdim = True) for x in features]
+        AS_feats = AS_feats - mean_base_features.unsqueeze(0)
+        AS_feats = AS_feats / torch.norm(AS_feats, dim = 2, keepdim = True)
+
+    (acc, conf), scores = ncmInterpol(features, run_classes[0], run_indices[0], args.n_shots[0], args.n_runs, args, AS_feats=AS_feats, lam_mix=args.lamda_mix)
+    print(f'{args.lamda_mix}: {np.round(100*acc,2)}% ±{np.round(conf*100, 2)}%')
+
+    if args.log_perf:
+        with open(args.log_perf, 'wb') as handle:
+            pickle.dump(scores, handle, protocol=pickle.HIGHEST_PROTOCOL)
