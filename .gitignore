@@ -133,3 +133,5 @@ dmypy.json
 *mine.sh
 bash_scripts/
 logs/
+*run_ncm_Ablation_Mean.py
+*run_closest_summetV2*

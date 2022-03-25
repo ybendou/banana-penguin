@@ -107,7 +107,7 @@ def load_features(features_path, base_features_path='', device='cpu', return_mea
                 feats = feats['augmented']
             else:
                 if feats.shape[0]==100: feats = feats[80:] # if features include base, val and novel
-            novel_features_list.append(feats.reshape(20, 600, -1, 640))
+            novel_features_list.append(feats.reshape(20, 600, -1, feats.shape[-1]))
             
         novel_features = torch.cat(novel_features_list, dim=2)
         del feats, novel_features_list

@@ -63,3 +63,12 @@ def create_runs(args, elements, n_runs, num_classes, classe=None, sample=None, s
             one_run_indices = torch.stack(one_run_indices)
             run_indices.append(one_run_indices.long().to(args.device))
     return run_classes, run_indices
+
+def get_closest_features_to_simplex(simplex, crops_features):
+    """
+    Return closest image crops to each of the simplex summets
+    """
+    dim = crops_features.shape[-1]
+    distances = torch.norm(simplex.reshape(-1, 1, dim) - crops_features.reshape(1, -1, dim), dim=2, p=2)
+    closest_crops = torch.argmin(distances, dim=1)
+    return torch.stack([crops_features[index_aug] for index_aug in closest_crops])
