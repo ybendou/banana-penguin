@@ -10,6 +10,13 @@ import matplotlib.pyplot as plt
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 def opencsv(filename):
+    """
+    Open a csv file and return the content as a list of lists.
+    Args:
+        filename (str): path to the csv file.
+    Returns:
+        list: list of lists containing the content of the csv file.
+    """
     file = open(filename)
     csvreader = csv.reader(file)
     header = []

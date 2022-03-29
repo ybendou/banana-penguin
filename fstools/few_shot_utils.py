@@ -2,6 +2,17 @@ import torch
 import numpy as np
 import random
 def generate_runs(data, run_classes, run_indices, batch_idx, batch_few_shot_runs=100):
+    """
+    Generates a few-shot run.
+    Args:
+        data: data to be used for the few-shot run
+        run_classes: classes of the few-shot run
+        run_indices: indices of the few-shot run
+        batch_idx: index of the batch
+        batch_few_shot_runs: number of runs per batch
+    Returns:
+        few_shot_run: a few-shot run
+    """
     n_runs, n_ways, n_samples = run_classes.shape[0], run_classes.shape[1], run_indices.shape[2]
     run_classes = run_classes[batch_idx * batch_few_shot_runs : (batch_idx + 1) * batch_few_shot_runs]
     run_indices = run_indices[batch_idx * batch_few_shot_runs : (batch_idx + 1) * batch_few_shot_runs]
@@ -13,6 +24,19 @@ def generate_runs(data, run_classes, run_indices, batch_idx, batch_few_shot_runs
     return res
 
 def define_runs(n_ways, n_shots, n_queries, num_classes, elements_per_class, n_runs, device='cuda:0'):
+    """
+    Define runs either randomly or by specifying one sample to insert either as a query or as a support
+    Args:
+        n_ways: number of classes in the few-shot run
+        n_shots: number of samples per class in the few-shot run
+        n_queries: number of queries per class in the few-shot run
+        num_classes: number of classes in the dataset
+        elements_per_class: number of elements in each class
+        n_runs: number of runs to generate
+    Returns:
+        run_classes: classes of the few-shot run
+        run_indices: indices of the few-shot run
+    """
     shuffle_classes = torch.LongTensor(np.arange(num_classes))
     run_classes = torch.LongTensor(n_runs, n_ways).to(device)
     run_indices = torch.LongTensor(n_runs, n_ways, n_shots + n_queries).to(device)
@@ -67,6 +91,11 @@ def create_runs(args, elements, n_runs, num_classes, classe=None, sample=None, s
 def get_closest_features_to_simplex(simplex, crops_features):
     """
     Return closest image crops to each of the simplex summets
+    Args:
+        simplex: simplex features
+        crops_features: image crops
+    Returns:
+        closest_crops: closest image crops to each of the simplex summets
     """
     dim = crops_features.shape[-1]
     distances = torch.norm(simplex.reshape(-1, 1, dim) - crops_features.reshape(1, -1, dim), dim=2, p=2)

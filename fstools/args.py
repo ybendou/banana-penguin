@@ -6,7 +6,13 @@ import numpy as np
 import random
 
 def process_arguments(params=None):
-
+    """
+    Processes the command line arguments.
+    Args:
+        params: (dict) Dictionary of parameters.
+    Returns:
+        params: (dict) Dictionary of parameters.
+    """
     parser = argparse.ArgumentParser()
     ### hyperparameters
     parser.add_argument("--batch-size", type=int, default=50, help="batch size")

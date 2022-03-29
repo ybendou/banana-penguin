@@ -95,6 +95,14 @@ def dimReduction(means):
 def load_features(features_path, base_features_path='', device='cpu', return_mean_base=False):
     """
     Load features and concatenate them given a list of features.
+    Args:
+        features_path (list): list of paths to features
+        base_features_path (str): path to base features
+        device (str): device to load features on
+        return_mean_base (bool): if True, return mean of base features
+    Returns:
+        features (torch.Tensor): concatenated features
+        base_features (torch.Tensor): base features
     """
 
     if features_path!=base_features_path:
